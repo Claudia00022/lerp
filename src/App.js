@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { Center, Environment } from "@react-three/drei"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
+import Button from "./Button"
+import { Vector3 } from 'three'
+
+function Rig(){
+  const {camera, pointer} = useThree()
+  const vec = new Vector3()
+
+  useFrame(() => {
+    vec.set(pointer.x, pointer.y, camera.position.z)
+    camera.position.lerp(vec, 0.025)
+    camera.lookAt(0, 0, 0)
+  })
+ 
+
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+  <Canvas shadows camera={{position:[0, 0, 5]}}>
+   <Environment preset="forest" background />
+   <Center>
+   {[...Array(5).keys()].map((x) => (
+    [...Array(3).keys()].map((y)=>(
+        <Button key = {x + y * 5 } position = {[x*2.5, y * 2.5, 0]}/>
+    ))
+  
+   ))}
+   </Center>
+   
+   <Rig />
+  </Canvas>
+
+  )
+  
 }
 
-export default App;
+export default App
